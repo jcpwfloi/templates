@@ -10,8 +10,6 @@
 #define min(a, b) ((a) < (b)) ? (a) : (b)
 #define lowbit(x) (x & (-x))
 
-#define maxn 1001
-
 using namespace std;
 
 typedef long long ll;
