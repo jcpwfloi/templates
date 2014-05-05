@@ -1,6 +1,7 @@
 #include<cstdio>
 #include<algorithm>
 #include<cstring>
+#include<queue>
 
 #define gi gI()
 #define clr(a) memset(a, 0, sizeof(a))
@@ -14,6 +15,16 @@ using namespace std;
 
 typedef long long ll;
 
+#define maxn 100001
+#define maxm 300001
+int n, m;
+int D[maxn], first[maxn], nex[maxm], to[maxm], W[maxm];
+int cnt = 0;
+#undef maxn
+#undef maxm
+
+queue<int> Q;
+
 inline ll gI() {
     ll flag = 1, p = 0;
     char c = getchar();
@@ -23,9 +34,24 @@ inline ll gI() {
     return p * flag;
 }
 
+inline void addEdge(int u, int v, int w) {
+    nex[++cnt] = first[u];
+    first[u] = cnt;
+    to[cnt] = v;
+    W[cnt] = w;
+}
+
 int main() {
-    int a = gi, b = gi;
-    printf("%d\n", a + b);
+    n = gi, m = gi;
+    rep(i, 1, m) {
+	int u = gi, v = gi, w = gi;
+	addEdge(u, v, w);
+	addEdge(v, u, w);
+    }
+    SPFA(1);
+    rep(i, 1, n) {
+	printf("%d%c", D[i], i == n ? '\n' : ' ');
+    }
     return 0;
 }
 
