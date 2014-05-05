@@ -25,7 +25,7 @@ inline ll gI() {
 
 char s[100001];
 char s2[200001];
-int L[200001];
+int L[200001], k;
 
 int main() {
 #ifndef ONLINE_JUDGE
@@ -36,10 +36,11 @@ int main() {
     int len = strlen(s);
     s2[0] = s[0];
     for (int i = 0; i < len; i++) {
-	s2[i * 2] = s[i];
-	s2[i * 2 - 1] = '$';
+	s2[i * 2 + 1] = s[i];
+	s2[i * 2] = '$';
     }
     len = strlen(s2);
+    s2[len++] = '$';
     k = 0;
     L[k] = 1;
     for (int i = 0; i < len; i++) {
