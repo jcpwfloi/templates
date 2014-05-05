@@ -19,6 +19,7 @@ typedef long long ll;
 #define maxm 300001
 int n, m;
 int D[maxn], first[maxn], nex[maxm], to[maxm], W[maxm];
+bool B[maxn];
 int cnt = 0;
 #undef maxn
 #undef maxm
@@ -32,6 +33,24 @@ inline ll gI() {
     if (c == '-') flag = -1, c = getchar();
     while ('0' <= c && c <= '9') p = p * 10 + (c - '0'), c = getchar();
     return p * flag;
+}
+
+inline void SPFA(int S) {
+    memset(D, 0x7F, sizeof(D));
+    D[S] = 0; Q.push(S); B[S] = true;
+    while (!Q.empty()) {
+	int u = Q.front(); Q.pop(); B[u] = false;
+	for (int i = first[u]; i; i = nex[i]) {
+	    int v = to[i];
+	    if (D[v] > D[u] + W[i]) {
+		D[v] = D[u] + W[i];
+		if (!B[v]) {
+		    B[v] = true;
+		    Q.push(v);
+		}
+	    }
+	}
+    }
 }
 
 inline void addEdge(int u, int v, int w) {
