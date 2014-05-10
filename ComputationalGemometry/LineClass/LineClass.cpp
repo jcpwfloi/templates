@@ -58,12 +58,25 @@ bool isIntersect(Line a, Line b) {
     return false;
 }
 
+bool isPerpendicular(Line a, Line b) {
+    int judge = Vectorize(a.a, a.b) ^ Vectorize(b.a, b.b);
+    if (isZero(judge)) return true; else return false;
+}
+
 int main() {
     while (1) {
 	puts("Input Line:");
-	int judge = isIntersect(Line(gi, gi, gi, gi), Line(gi, gi, gi, gi)) ;
-	if (judge)
+	Line a = Line(gi, gi, gi, gi);
+	Line b = Line(gi, gi, gi, gi);
+	int judge = isIntersect(a, b) ;
+	int judgePerp = isPerpendicular(a, b);
+	if (judge) {
 	    puts("Intersect");
+	    if (judgePerp)
+		puts("Perpendicular");
+	    else
+		puts("Not Perpendicular");
+	}
 	else
 	    puts("Not Intersect");
     }
