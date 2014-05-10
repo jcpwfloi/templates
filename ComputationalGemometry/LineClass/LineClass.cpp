@@ -36,14 +36,19 @@ struct Point {
     }
 };
 
+typedef Point Vector;
+
 struct Line {
     Point a, b;
     Line(double x1, double y1, double x2, double y2) : a(Point(x1, y1)), b(Point(x2, y2)) {}
     Line(Point a, Point b) : a(a), b(b) {}
     Line() : a(Point(0, 0)), b(Point(0, 0)) {}
+    Vector v() {return b - a;}
+    double len() {
+	Vector temp = this -> v();
+	return sqrt(temp ^ temp);
+    }
 };
-
-typedef Point Vector;
 
 inline bool isZero(double x) {if (fabs(x) <= eps) return true; else return false;}
 inline int sgn(double x) {if (isZero(x)) return 0;if (x > 0) return 1; else return -1;}
@@ -63,8 +68,16 @@ bool isPerpendicular(Line a, Line b) {
     if (isZero(judge)) return true; else return false;
 }
 
+double distPointToLine(Point p, Line l) {
+    return fabs((Vectorize(p, l.a) * Vectorize(p, l.b))) / l.len();
+}
+
 int main() {
     while (1) {
+    puts("1: Line intersect and Perpendicular");
+    puts("2: distance of Point to Line");
+	int select = gi;
+    if (select == 1) {
 	puts("Input Line:");
 	Line a = Line(gi, gi, gi, gi);
 	Line b = Line(gi, gi, gi, gi);
@@ -79,6 +92,13 @@ int main() {
 	}
 	else
 	    puts("Not Intersect");
+    } else if (select == 2) {
+	puts("Input Point:");
+	Point p = Point(gi, gi);
+	puts("Input Line:");
+	Line l = Line(gi, gi, gi, gi);
+	printf("%.6lf\n", distPointToLine(p, l));
+    }
     }
     return 0;
 }
