@@ -85,6 +85,10 @@ namespace treap {
 }
 
 int main() {
+    scanf("%d", &T);
+    while (T--) {
+	int cmdt = gi;
+    }
     return 0;
 }
 
