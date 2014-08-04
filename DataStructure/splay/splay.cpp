@@ -66,10 +66,8 @@ void Node::relax() {
 Node* make(int v) {
     C -> ch[0] = C -> ch[1] = null;
     C -> s = 1;
-    C -> v = v;
-    C -> mx = v;
-    C -> add = 0;
-    C -> rev = 0;
+    C -> v = C -> mx = v;
+    C -> add = C -> rev = 0;
     return C++;
 }
 

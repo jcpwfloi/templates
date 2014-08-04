@@ -1,48 +1,76 @@
+/*
+Author: arcGravitus
+
+Date: 2014/8/4
+
+Template: Segmentational Tree
+
+Usage: Maintain segmentational information that can be merged and splited
+
+Interface:
+    1. define sgt<data, tag> sgt1 in the main program
+    2. overload class data and tag
+    3. use sgt1.Build(n) to init the segmentational tree with the size n
+    4. use sgt1.Query(l, r) to get information of [l, r]
+    5. use sgt1.Edit(l, r, C) to tag [l, r] an information
+*/
+
 #include<cstdio>
 #include<algorithm>
-
-#define rep(i, l, r) for (int i = l; i <= r; i++)
-#define gi gI()
-
+#include<cstring>
 #define lson u << 1
 #define rson u << 1 | 1
 
-using namespace std;
+const int T_MAX = 400001;
+const int INF = 0x7FFFFFFF;
 
-inline long long gI() {
-    long long p = 0, flag = 1;
-    char c = getchar();
-    while ((c < '0' || c > '9') && c != '-') c = getchar();
-    if (c == '-') flag = -1, c = getchar();
-    while ('0' <= c && c <= '9') p = p * 10 + (c - '0'), c = getchar();
-    return p * flag;
+template <class T>
+T min(T a, T b) {
+    return a < b ? a : b;
 }
 
-int const MAXN = 100001;
+typedef int tag;
 
-int A[MAXN];
-int n, m;
+struct data {
+    int mn, sm;
+    data () : mn(INF), sm(0) {}
+    data (int a, int b) : mn(a), sm(b) {}
+    data operator + (data x) {
+	return data(min(mn, x.mn), sm + x.sm);
+    }
+    void tagIt(tag x, int len) {
+	mn += x;
+	sm += x * len;
+    }
+};
 
-namespace sgt {
-    const int T_MAX = 400001;
+template <class T1, class T2> //T1 for data, T2 for tag
+
+struct sgt {
     struct Node {
-	int L, R, min, tag;
+	int L, R;
+	T1 data;
+	T2 tag;
     } T[T_MAX];
+
     inline void Update(int u) {
-	T[u].min = min (T[lson].min, T[rson].min);
+	T[u].data = T[lson].data + T[rson].data;
     }
-    inline void Cover(int u, int C) {
-	T[u].tag += C;
-	T[u].min += C;
+
+    inline void Cover(int u, T2 C) {
+	T[u].tag = T[u].tag + C;
+	T[u].data.tagIt(C, T[u].R - T[u].L + 1);
     }
+
     inline void Push(int u) {
 	if (T[u].tag) {
-	    Cover(lson, T[u].tag);
-	    Cover(rson, T[u].tag);
-	    T[u].tag = 0;
+	Cover(lson, T[u].tag);
+	Cover(rson, T[u].tag);
+	T[u].tag = 0;
 	}
     }
-    inline void Edit(int u, int L, int R, int C) {
+    
+    inline void Edit(int u, int L, int R, T2 C) {
 	if (L <= T[u].L && T[u].R <= R) {
 	    Cover(u, C);
 	    return;
@@ -52,21 +80,30 @@ namespace sgt {
 	if (R >= T[rson].L) Edit(rson, L, R, C);
 	Update(u);
     }
-    inline int Query(int u, int L, int R) {
+
+    inline void Edit(int L, int R, T2 C) {
+	Edit(1, L, R, C);
+    }
+
+    inline T1 Query(int u, int L, int R) {
 	if (L <= T[u].L && T[u].R <= R) {
-	    return T[u].min;
+	    return T[u].data;
 	}
+	T1 ans;
 	Push(u);
-	int ans = 2147483647;
-	if (L <= T[lson].R) ans = min(ans, Query(lson, L, R));
-	if (R >= T[rson].L) ans = min(ans, Query(rson, L, R));
+	if (L <= T[lson].R) ans = ans + Query(lson, L, R);
+	if (R >= T[rson].L) ans = ans + Query(rson, L, R);
 	return ans;
     }
+
+    inline T1 Query(int L, int R) {
+	return Query(1, L, R);
+    }
+
     inline void Build(int u, int L, int R) {
 	T[u].L = L;
 	T[u].R = R;
 	if (L == R) {
-	    T[u].min = A[L];
 	    return;
 	}
 	int M = (L + R) >> 1;
@@ -74,13 +111,16 @@ namespace sgt {
 	Build(rson, M + 1, R);
 	Update(u);
     }
-}
+
+    inline void Build(int n) {
+	memset(T, 0, sizeof(T));
+	Build(1, 1, n);
+    }
+};
+
+sgt<data, tag> sgt1;
 
 int main() {
-    n = gi, m = gi;
-    rep(i, 1, n) A[i] = gi;
-    sgt::Build(1, 1, n);
-    while (m--) {
-    }
     return 0;
 }
+
